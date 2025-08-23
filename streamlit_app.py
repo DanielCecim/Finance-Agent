@@ -202,6 +202,142 @@ def create_enhanced_price_chart(df, symbol, period="1y"):
         st.error(f"Error creating chart: {e}")
         return None
 
+def create_rsi_chart(df, symbol):
+    """Create RSI chart with legend"""
+    if df is None or df.empty or 'RSI' not in df.columns:
+        return None
+    
+    try:
+        fig = go.Figure()
+        
+        # Add RSI line
+        fig.add_trace(
+            go.Scatter(
+                x=df['Date'],
+                y=df['RSI'],
+                mode='lines',
+                name='RSI',
+                line=dict(color='#1f77b4', width=2),
+                hovertemplate='<b>%{x}</b><br>RSI: %{y:.2f}<extra></extra>'
+            )
+        )
+        
+        # Add overbought line (70)
+        fig.add_hline(
+            y=70, 
+            line_dash="dash", 
+            line_color="red",
+            annotation_text="Overbought (70)",
+            annotation_position="top right"
+        )
+        
+        # Add oversold line (30)
+        fig.add_hline(
+            y=30, 
+            line_dash="dash", 
+            line_color="green",
+            annotation_text="Oversold (30)",
+            annotation_position="bottom right"
+        )
+        
+        fig.update_layout(
+            title=f'{symbol} RSI (Relative Strength Index)',
+            xaxis_title='Date',
+            yaxis_title='RSI',
+            hovermode='x unified',
+            template='plotly_white',
+            height=400,
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                yanchor="top",
+                y=1.1,
+                xanchor="left",
+                x=0.01,
+                bgcolor='rgba(0, 0, 0, 0.3)',
+                bordercolor='rgba(255, 255, 255, 0.2)',
+                borderwidth=1,
+                font=dict(color='white')
+            )
+        )
+        
+        return fig
+    except Exception as e:
+        st.error(f"Error creating RSI chart: {e}")
+        return None
+
+def create_moving_averages_chart(df, symbol):
+    """Create Moving Averages chart with legend"""
+    if df is None or df.empty:
+        return None
+    
+    try:
+        fig = go.Figure()
+        
+        # Add Close Price
+        fig.add_trace(
+            go.Scatter(
+                x=df['Date'],
+                y=df['Close'],
+                mode='lines',
+                name='Close Price',
+                line=dict(color='#1f77b4', width=2),
+                hovertemplate='<b>%{x}</b><br>Close: $%{y:.2f}<extra></extra>'
+            )
+        )
+        
+        # Add SMA 20
+        if 'SMA_20' in df.columns:
+            fig.add_trace(
+                go.Scatter(
+                    x=df['Date'],
+                    y=df['SMA_20'],
+                    mode='lines',
+                    name='SMA 20',
+                    line=dict(color='orange', width=1.5),
+                    hovertemplate='<b>%{x}</b><br>SMA 20: $%{y:.2f}<extra></extra>'
+                )
+            )
+        
+        # Add SMA 50
+        if 'SMA_50' in df.columns:
+            fig.add_trace(
+                go.Scatter(
+                    x=df['Date'],
+                    y=df['SMA_50'],
+                    mode='lines',
+                    name='SMA 50',
+                    line=dict(color='purple', width=1.5),
+                    hovertemplate='<b>%{x}</b><br>SMA 50: $%{y:.2f}<extra></extra>'
+                )
+            )
+        
+        fig.update_layout(
+            title=f'{symbol} Moving Averages',
+            xaxis_title='Date',
+            yaxis_title='Price ($)',
+            hovermode='x unified',
+            template='plotly_white',
+            height=400,
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                yanchor="top",
+                y=1.1,
+                xanchor="left",
+                x=0.01,
+                bgcolor='rgba(0, 0, 0, 0.3)',
+                bordercolor='rgba(255, 255, 255, 0.2)',
+                borderwidth=1,
+                font=dict(color='white')
+            )
+        )
+        
+        return fig
+    except Exception as e:
+        st.error(f"Error creating Moving Averages chart: {e}")
+        return None
+
 def display_key_metrics(df, symbol):
     """Display key metrics at the top"""
     if df is None or df.empty:
@@ -370,16 +506,17 @@ def main():
                     # Calculate indicators
                     df_indicators = calculate_technical_indicators(df)
                     
-                    # Display RSI
+                    # Display RSI chart with legend
                     if 'RSI' in df_indicators.columns:
-                        st.line_chart(df_indicators.set_index('Date')['RSI'])
-                        st.caption("RSI (Relative Strength Index)")
+                        rsi_fig = create_rsi_chart(df_indicators, symbol)
+                        if rsi_fig:
+                            st.plotly_chart(rsi_fig, use_container_width=True)
                     
-                    # Display moving averages
+                    # Display moving averages chart with legend
                     if 'SMA_20' in df_indicators.columns and 'SMA_50' in df_indicators.columns:
-                        ma_data = df_indicators[['Date', 'Close', 'SMA_20', 'SMA_50']].set_index('Date')
-                        st.line_chart(ma_data)
-                        st.caption("Moving Averages")
+                        ma_fig = create_moving_averages_chart(df_indicators, symbol)
+                        if ma_fig:
+                            st.plotly_chart(ma_fig, use_container_width=True)
             
             with tab3:
                 st.subheader("Download Data")

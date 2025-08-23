@@ -27,7 +27,7 @@ A powerful financial analysis dashboard with an integrated AI agent that provide
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/DanielCecim/Finance-Agent
    cd FinanceAgent2
    ```
 
