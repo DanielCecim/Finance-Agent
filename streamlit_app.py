@@ -338,7 +338,7 @@ def create_moving_averages_chart(df, symbol):
         st.error(f"Error creating Moving Averages chart: {e}")
         return None
 
-def display_key_metrics(df, symbol):
+def display_key_metrics(df, symbol, period="1y"):
     """Display key metrics at the top"""
     if df is None or df.empty:
         return
@@ -346,15 +346,26 @@ def display_key_metrics(df, symbol):
     col1, col2, col3, col4, col5 = st.columns(5)
     
     current_price = df['Close'].iloc[-1]
-    previous_price = df['Close'].iloc[-2] if len(df) > 1 else current_price
-    price_change = current_price - previous_price
-    price_change_pct = (price_change / previous_price) * 100
+    
+    # Calculate period change (from start to end of selected period)
+    period_start_price = df['Close'].iloc[0]
+    period_price_change = current_price - period_start_price
+    period_price_change_pct = (period_price_change / period_start_price) * 100
+    
+    # Calculate daily change (current vs previous day)
+    daily_previous_price = df['Close'].iloc[-2] if len(df) > 1 else current_price
+    daily_price_change = current_price - daily_previous_price
+    daily_price_change_pct = (daily_price_change / daily_previous_price) * 100
     
     with col1:
         st.metric("Current Price", f"${current_price:.2f}")
     
     with col2:
-        st.metric("Price Change", f"${price_change:.2f}", f"{price_change_pct:.2f}%")
+        # Show period change for longer periods, daily change for short periods
+        if period in ["1d", "5d"]:
+            st.metric("Daily Change", f"${daily_price_change:.2f}", f"{daily_price_change_pct:.2f}%")
+        else:
+            st.metric("Period Change", f"${period_price_change:.2f}", f"{period_price_change_pct:.2f}%")
     
     with col3:
         volume = df['Volume'].iloc[-1] if 'Volume' in df.columns else 0
@@ -468,12 +479,21 @@ def main():
     
     # Load data and display dashboard
     if load_button or st.session_state.dashboard_data is not None:
-        # Load new data only if button is clicked or no data exists
-        if load_button or st.session_state.dashboard_data is None:
+        # Load new data if button is clicked, period changed, or no data exists
+        should_load_data = (
+            load_button or 
+            st.session_state.dashboard_data is None or
+            st.session_state.get('last_period') != period or
+            st.session_state.get('last_symbol') != symbol
+        )
+        
+        if should_load_data:
             with st.spinner("Loading stock data..."):
                 df = load_stock_data(symbol, period)
                 if df is not None:
                     st.session_state.dashboard_data = df
+                    st.session_state.last_period = period
+                    st.session_state.last_symbol = symbol
                 else:
                     st.error(f"Could not load data for {symbol}")
                     return
@@ -487,7 +507,7 @@ def main():
             st.markdown(f"## 📊 {symbol} Analysis Dashboard")
             
             # Display key metrics
-            display_key_metrics(df, symbol)
+            display_key_metrics(df, symbol, period)
             
             # Create tabs
             tab1, tab2, tab3 = st.tabs(["Price Chart", "Technical Indicators", "Downloads"])
