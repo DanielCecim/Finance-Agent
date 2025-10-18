@@ -7,7 +7,6 @@ A powerful financial analysis dashboard with an integrated AI agent that provide
 ### 📊 **Stock Dashboard**
 - **Real-time Data**: Live stock prices and market data via Yahoo Finance
 - **Technical Indicators**: SMA, Bollinger Bands, RSI, and volume analysis
-- **Interactive Charts**: Beautiful Plotly charts with zoom, pan, and hover details
 - **Key Metrics**: Current price, price change, volume, period highs/lows
 - **Data Export**: Download stock data as CSV files
 
