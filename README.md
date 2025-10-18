@@ -1,22 +1,19 @@
-# 🤖 Finance Agent Dashboard
+#  Finance Agent 
+## Features
 
-A powerful financial analysis dashboard with an integrated AI agent that provides real-time stock data, technical analysis, and intelligent financial insights.
-
-## ✨ Features
-
-### 📊 **Stock Dashboard**
+### **Stock Dashboard**
 - **Real-time Data**: Live stock prices and market data via Yahoo Finance
 - **Technical Indicators**: SMA, Bollinger Bands, RSI, and volume analysis
 - **Key Metrics**: Current price, price change, volume, period highs/lows
 - **Data Export**: Download stock data as CSV files
 
-### 🤖 **AI Financial Analyst**
+###  **AI Financial Analyst**
 - **Smart Conversations**: Natural language queries about stocks and financial data
 - **Memory System**: Remembers up to 3 previous conversations for context
 - **Financial Expertise**: Specialized in stock analysis, ratios, and market insights
 - **Real-time Data**: Uses YFinance tools for accurate, up-to-date information
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -47,7 +44,7 @@ A powerful financial analysis dashboard with an integrated AI agent that provide
    ```
 
 ```
-## 🎯 Usage
+##  Usage
 
 ### Dashboard
 1. Enter a stock symbol (e.g., AAPL, MSFT, GOOGL)
@@ -63,7 +60,7 @@ A powerful financial analysis dashboard with an integrated AI agent that provide
    - "What are the key financial ratios for Tesla?"
    - "Can you remind me what is the current ratio?" (agent remembers context)
 
-## 🔧 Configuration
+##  Configuration
 
 ### Agent Settings
 The AI agent is configured with:
@@ -77,7 +74,7 @@ The AI agent is configured with:
 - Update `agent.py` to add new tools or change memory settings
 - Customize charts and indicators in `streamlit_app.py`
 
-## 📦 Dependencies
+##  Dependencies
 
 - **Streamlit**: Web application framework
 - **Plotly**: Interactive charts and visualizations
