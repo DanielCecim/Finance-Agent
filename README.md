@@ -43,7 +43,6 @@
    streamlit run streamlit_app.py
    ```
 
-```
 ##  Usage
 
 ### Dashboard
