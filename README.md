@@ -29,7 +29,11 @@
 
 2. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   uv sync
+   ```
+   Or if using pip:
+   ```bash
+   pip install -e .
    ```
 
 3. **Set up environment variables**
